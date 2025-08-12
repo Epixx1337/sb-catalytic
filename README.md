@@ -2,90 +2,41 @@
 Vibecoded fivem script made in 10mins.
 
 
-# 🔧 Advanced Catalytic Converter Theft System for FiveM
+# Catalytic Converter Theft System
 
-## 📋 Description
-A comprehensive and highly optimized catalytic converter theft script for FiveM servers. This system allows players to steal catalytic converters from NPC vehicles using realistic mechanics, complete with police alerts, vehicle damage effects, and a black market selling system. Built with security and performance in mind using ox_lib and ox_inventory.
+A realistic catalytic converter theft script for FiveM servers with ox_lib and ox_inventory integration.
 
-## ✨ Key Features
+## 📋 Features
 
-### 🎯 Core Functionality
-- **Realistic Theft Mechanic** - Target vehicle exhaust bones specifically with a blowtorch
-- **Dynamic Targeting** - Target only appears when player has the required tool
-- **Smooth Animation System** - Player walks to driver door, positions correctly, then slides under vehicle
-- **Vehicle Damage System** - Stolen vehicles emit heavy smoke from exhaust and become undriveable
-- **Black Market NPC** - Sell stolen converters to a configurable buyer location
-- **Smart Inventory Integration** - Full ox_inventory support with item management
-
-### 🚔 Law Enforcement
-- **Multiple Dispatch Support** - Integrated with popular dispatch systems:
-  - ✅ ps-dispatch
-  - ✅ lb-phone dispatch
-  - ✅ cd-dispatch  
-  - ✅ core-dispatch
-  - ✅ Custom dispatch functions
-- **No Double Notifications** - Clean integration without redundant alerts
-- **Configurable Police Jobs** - Define which jobs receive theft alerts
-
-### 🛡️ Security Features
-- **Anti-Exploit Protection** - Multiple server-side validation checks
-- **Secured Events** - All events validated with distance, item, and cooldown checks
-- **Distance Verification** - 5-meter radius check for NPC interactions
-- **Inventory Validation** - Prevents item duplication and invalid transactions
-- **Server-Side Cooldowns** - Prevents spam and exploitation
-- **Owned Vehicle Protection** - Cannot steal from player-owned vehicles
-- **Detailed Logging** - Complete transaction logs with player identifiers
-
-### ⚖️ Balance & Economy
-- **Cooldown System** - Configurable time between thefts (default: 60 seconds)
-- **Daily Limits** - Maximum thefts per day per player (default: 10)
-- **Price Variance** - Random market fluctuation for converter prices ($450-$550 default)
-- **Required Tool** - Players must have blowtorch to steal
-- **Weight System** - Converters have realistic weight in inventory (5000g)
-
-### 🎮 Framework Support
-- **Multi-Framework Compatible**:
-  - ✅ QB-Core
-  - ✅ QBOX (qbx_core)
-  - ✅ ESX
-  - ✅ OX (standalone)
-- **Automatic Detection** - Script auto-detects your framework
-- **Database Integration** - Works with standard player_vehicles table
-
-### 🔧 Technical Features
-- **Optimized Performance** - Uses ox_lib callbacks and efficient threads
-- **Clean Code Structure** - Organized client/server architecture
-- **Extensive Configuration** - Highly customizable via config.lua
-- **Proper Animations** - Uses correct GTA V mechanic animations
-- **Particle Effects** - Realistic smoke from damaged vehicles
-- **No Unnecessary Features** - Clean, focused functionality
+- Steal catalytic converters from NPC vehicles using a blowtorch
+- Realistic animations and vehicle damage effects
+- Multiple dispatch system support (ps-dispatch, lb-phone, cd-dispatch, core-dispatch)
+- Sell stolen converters to a black market NPC
+- Multi-framework support (QB-Core, QBOX, ESX, OX)
+- Advanced security with server-side validation
+- Configurable cooldowns and daily limits
 
 ## 📦 Dependencies
-**Required:**
-- ox_lib
-- ox_inventory
-- ox_target
-- oxmysql
 
-**Optional** (for framework support):
-- qb-core / qbx_core / es_extended
+### Required
+- [ox_lib](https://github.com/overextended/ox_lib)
+- [ox_inventory](https://github.com/overextended/ox_inventory)
+- [ox_target](https://github.com/overextended/ox_target)
+- [oxmysql](https://github.com/overextended/oxmysql)
 
-## 🎯 Installation
+### Optional (Framework)
+- qb-core OR qbx_core OR es_extended
 
-### 1. Add to your resources folder
-```
-resources/
-├── cat_theft/
-│   ├── fxmanifest.lua
-│   ├── config.lua
-│   ├── client/
-│   │   └── main.lua
-│   └── server/
-│       └── main.lua
-```
+## 🚀 Installation
 
-### 2. Add items to ox_inventory
-Add to `ox_inventory/data/items.lua`:
+### Step 1: Resource Setup
+1. Download the resource
+2. Extract to your resources folder
+3. Rename the folder to `cat_theft` (if needed)
+
+### Step 2: Add Items to ox_inventory
+Add these items to your `ox_inventory/data/items.lua`:
+
 ```lua
 ['blowtorch'] = {
     label = 'Blowtorch',
@@ -96,7 +47,7 @@ Add to `ox_inventory/data/items.lua`:
 },
 
 ['stolen_converter'] = {
-    label = 'Stolen Catalytic Converter', 
+    label = 'Stolen Catalytic Converter',
     weight = 5000,
     stack = true,
     close = true,
@@ -104,69 +55,175 @@ Add to `ox_inventory/data/items.lua`:
 },
 ```
 
-### 3. Configure your dispatch
-Edit `config.lua`:
+### Step 3: Database Setup
+No additional database tables required. The script uses the existing `player_vehicles` table for ownership checks.
+
+### Step 4: Configure Dispatch System
+Edit `config.lua` and set your dispatch system:
+
 ```lua
-Config.PoliceDispatch = 'ps-dispatch' -- Your dispatch system
+Config.PoliceDispatch = 'ps-dispatch' -- Options: 'ps-dispatch', 'lb-phone', 'cd-dispatch', 'core-dispatch', 'custom'
 ```
 
-### 4. Start the resource
+### Step 5: Add to server.cfg
 ```cfg
+ensure ox_lib
+ensure ox_inventory
+ensure ox_target
+ensure oxmysql
 ensure cat_theft
 ```
 
-## 🎮 How It Works
+## ⚙️ Configuration
 
-1. **Player needs blowtorch in inventory** - Target only appears with item
-2. **Target exhaust area of NPC vehicle** - Realistic targeting on exhaust bones
-3. **Character walks to driver door** - Natural movement to position
-4. **15-second theft animation** - Player slides under vehicle realistically
-5. **Police receive dispatch alert** - Through your configured dispatch system
-6. **Vehicle disabled with smoke** - Realistic damage effects
-7. **Receive stolen converter** - Added to inventory with weight
-8. **Sell at black market NPC** - Configurable location with price variance
+All settings can be modified in `config.lua`:
 
-## ⚙️ Configuration Options
+### Basic Settings
+```lua
+Config.RequiredItem = 'blowtorch' -- Item needed to steal
+Config.StolenItemName = 'stolen_converter' -- Item received
+Config.TheftDuration = 15000 -- Time to steal (milliseconds)
+Config.TheftCooldown = 60 -- Cooldown between thefts (seconds)
+Config.MaxTheftsPerDay = 10 -- Daily limit per player
+```
 
-- ✅ Theft duration and cooldowns
-- ✅ Daily theft limits  
-- ✅ Item names and requirements
-- ✅ NPC buyer location and model
-- ✅ Sell prices with variance
-- ✅ Police dispatch system
-- ✅ Vehicle damage effects
-- ✅ Smoke duration and intensity
-- ✅ All notification messages
+### Selling Settings
+```lua
+Config.SellPrice = 500 -- Base price per converter
+Config.PriceVariance = 50 -- Random price variation (+/- amount)
+```
 
-## 🔒 Security Highlights
+### NPC Buyer Location
+```lua
+Config.SellNPC = {
+    model = 's_m_y_dealer_01',
+    coords = vector4(1175.43, -1305.51, 34.89, 90.0), -- x, y, z, heading
+    showBlip = true,
+    blipSprite = 500,
+    blipColor = 2,
+    blipScale = 0.8,
+    blipName = 'Catalytic Converter Buyer'
+}
+```
 
-- **Server-validated events** - Can't exploit reward events
-- **Distance checks** - Must be near vehicle/NPC
-- **Item verification** - Server confirms inventory
-- **Cooldown enforcement** - Server-tracked per player
-- **Anti-spam protection** - Rate limiting built-in
+### Police Settings
+```lua
+Config.AlertPolice = true -- Enable police alerts
+Config.PoliceDispatch = 'ps-dispatch' -- Your dispatch system
+Config.PoliceJobs = { -- Jobs that receive alerts
+    'police',
+    'sheriff',
+    'bcso',
+    'trooper',
+    'ranger'
+}
+```
 
-## 📸 Features Showcase
+### Custom Dispatch Setup
+If using custom dispatch, modify the function in config:
+```lua
+Config.PoliceDispatch = 'custom'
+Config.CustomPoliceAlert = function(coords, message)
+    -- Your custom dispatch trigger here
+    exports['your-dispatch']:SendAlert({
+        coords = coords,
+        message = message,
+        -- your additional parameters
+    })
+end
+```
 
-- ✨ **Realistic Animations** - Proper mechanic sliding under vehicle
-- 🚗 **Vehicle Effects** - Heavy smoke from exhaust after theft
-- 🎯 **Smart Targeting** - Only shows when equipped with blowtorch
-- 💰 **Dynamic Economy** - Fluctuating black market prices
-- 👮 **Police Integration** - Clean dispatch system support
+## 🎮 Usage
 
-## 💡 Why This Script?
+### For Players
+1. Obtain a blowtorch item
+2. Approach any NPC vehicle
+3. Target the exhaust area (target only appears with blowtorch)
+4. Complete the theft animation (15 seconds)
+5. Vehicle will be disabled with smoke effects
+6. Sell converters at the configured NPC location
 
-- **Performance Optimized** - Built with ox_lib for efficiency
-- **Secure by Design** - Multiple validation layers
-- **Framework Flexible** - Works with all major frameworks
-- **Realistic Mechanics** - Proper animations and effects
-- **Easy Configuration** - Simple config file setup
-- **Active Development** - Regular updates and support
+### For Admins
+- Configure all settings in `config.lua`
+- Items must be added to ox_inventory
+- Ensure all dependencies are started before cat_theft
+
+## 🔧 Troubleshooting
+
+### Target doesn't appear
+- Ensure player has blowtorch item
+- Check that ox_target is running
+- Verify vehicle is not player-owned
+
+### Can't sell converters
+- Check distance from NPC (must be within 5 meters)
+- Ensure you have stolen converters in inventory
+- Verify NPC spawn location is accessible
+
+### Police alerts not working
+- Verify dispatch system is configured correctly
+- Check that dispatch resource is running
+- Ensure police jobs match your server's job names
+
+### SQL Errors
+- Ensure oxmysql is running and connected
+- Verify player_vehicles table exists
+- Check database connection settings
+
+## 📝 Item Spawning
+
+### For QB-Core/QBOX
+```
+/giveitem [id] blowtorch 1
+/giveitem [id] stolen_converter 1
+```
+
+### For ESX
+```
+/giveitem [id] blowtorch 1
+/giveitem [id] stolen_converter 1
+```
+
+### For Testing (Server Console)
+```lua
+exports.ox_inventory:AddItem(playerId, 'blowtorch', 1)
+exports.ox_inventory:AddItem(playerId, 'stolen_converter', 1)
+```
+
+## 🛡️ Security Features
+
+- Server-side validation for all rewards
+- Distance checks (player must be near vehicle)
+- Item verification (must have blowtorch)
+- Cooldown enforcement (prevents spam)
+- Anti-exploit protection on sell events
+- Owned vehicle protection
+
+## 📋 Default Controls
+
+- **Target Vehicle**: Alt (ox_target default)
+- **Cancel Theft**: X (during progress bar)
+
+## 🆘 Support
+
+- Check console (F8) for any errors
+- Ensure all dependencies are up to date
+- Verify configuration matches your server setup
+- All events are logged with [CAT_THEFT] prefix
+
+## 📄 License
+
+This resource is provided as-is for use on FiveM servers.
+
+## 🔄 Changelog
+
+### Version 1.0.0
+- Initial release
+- Full ox_lib integration
+- Multi-framework support
+- Secure event system
+- Configurable dispatch systems
 
 ---
 
-**A quality script that brings realistic criminal activity to your server while maintaining balance and security. Perfect for servers looking to expand their criminal economy with engaging mechanics!**
-
-**Download:** [GitHub/Releases Link]  
-**Support:** [Discord Server]  
-**Preview:** [Video Link]
+**Note:** Always backup your server before installing new resources. Test in a development environment first.
